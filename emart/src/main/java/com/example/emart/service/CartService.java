@@ -20,22 +20,6 @@ public class CartService {
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
 
-  @Transactional
-  public Cart addProduct(CartAddRequestDTO cartDTO) {
-    Optional<Cart> sameProduct = userRepository.getSameProduct(cartDTO);
-    Cart cart;
-    if (sameProduct.isEmpty()) {
-      cart = new Cart(
-      );
-      cart.setUser(userRepository.getUserInfoById(cartDTO.getUserId()).get());
-      cart.setProduct(productRepository.findById(cartDTO.getProductId()));
-      cart.setQty(cartDTO.getQty());
-    } else {
-      cart = sameProduct.get();
-      cart.setQty(cart.getQty() + 1);
-    }
-    return cartRepository.save(cart);
-  }
 
   public List<Product> getAllCartProductList(Long userId) {
     return cartRepository.getAllCartProductList(userId);
@@ -56,5 +40,19 @@ public class CartService {
   public void deleteCartProduct(Long id) {
     Cart cart = cartRepository.getCartInfoById(id);
     cartRepository.deleteCartProduct(cart);
+  }
+
+  public void save(Cart cart) {
+    cartRepository.save(cart);
+  }
+
+  public Optional<Cart> findCart(Long userId, Product product) {
+    return cartRepository.findCartByUserIdAndProductId(userId, product.getId());
+  }
+
+  @Transactional
+  public void updateQty(Cart cart, int newQty) {
+    cart.setQty(newQty);
+
   }
 }

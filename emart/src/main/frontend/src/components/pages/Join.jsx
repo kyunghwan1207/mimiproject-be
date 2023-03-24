@@ -14,6 +14,7 @@ function Join() {
     const [message, setMessage] = useState('');
     const [name, setName] = useState('');
     const [roadAddress, setRoadAddress] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [isOpen, setIsOpen] = useState(false); 
 
     const emailRef = useRef('');
@@ -82,17 +83,16 @@ function Join() {
         }
 
         const newUserId = getNextId();
-        const url = 'http://localhost:3001/users';
         const data = {
-            "id": newUserId,
+            "username": name,
             "email": email,
-            "name": name,
             "password": password,
-            "roadAddress": roadAddress 
+            "address": roadAddress,
+            "phoneNumber": phoneNumber
         }
         console.log('before post data: ', data);
         try {
-            let res = await axios(url, 
+            let res = await axios('/api/v1/users/join', 
             {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
@@ -130,24 +130,43 @@ function Join() {
     const handleChangeName = (e) => {
         setName(e.target.value);
     }
-    const handleClickCheckDuplicateBtn = () => {
+    const handleChangePhoneNumber = (e) => {
+        setPhoneNumber(e.target.value);
+    }
+    const handleClickCheckDuplicateBtn = async () => {
         console.log('email: ', email);
         if(email === undefined || email.trim() === ''){
             setIsDuplicate(true);
             setMessage("이메일을 입력해주시기 바랍니다!");
             return;
         }
-        if(userList.length > 0){
-            for(let i=0; i<userList.length; i++){
-                if(email === userList[i].email){
-                    setIsDuplicate(true);
-                    setMessage("이미 가입된 이메일입니다!");
-                    return;
+        try {
+            let res = await axios('/api/v1/users/check-email', 
+            {
+                method: 'post',
+                headers: {'Content-Type': 'application/json'},
+                data: {
+                    "email": email
                 }
+            })
+            console.log("join res: ", res);
+            if(res.status >= 200 && res.status < 300){
+                setIsDuplicate(false);
+                setMessage("사용가능한 이메일입니다!");
+            } else {
+                console.log("else")
+                setIsDuplicate(true);
+                setMessage("이미 가입된 이메일입니다!");
+                return;
             }
-        } 
-        setIsDuplicate(false);
-        setMessage("사용가능한 이메일입니다!");
+        } catch (err) {
+            console.log("email dup check err: ", err);
+            console.log("catch err")
+            setIsDuplicate(true);
+            setMessage("이미 가입된 이메일입니다!");
+            return;
+        }
+        
         return;
     }
     const getNextId = () => {
@@ -160,6 +179,7 @@ function Join() {
         navigate("/login", {});
     }
     useEffect(() => {
+        console.log("hi");
         const url_getUserList = 'http://localhost:3001/users';
         axios.get(url_getUserList)
         .then((res) => res.data)
@@ -191,6 +211,10 @@ function Join() {
                             <p className={message == "사용가능한 이메일입니다!" ? style.goodMsgLabel : style.badMsgLabel}>{message}</p>
                     }
                 </span>
+            </div>
+            <div>
+                <label>전화번호: </label>
+                <input name='phoneNumber' placeholder='전화번호를 입력해주세요' value={phoneNumber} onChange={handleChangePhoneNumber}/>    
             </div>
             <div>
                 <label>비밀번호: </label>

@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class CartRepository {
@@ -29,5 +32,12 @@ public class CartRepository {
 
   public void deleteCartProduct(Cart cart) {
     em.remove(cart);
+  }
+
+  public Optional<Cart> findCartByUserIdAndProductId(Long userId, Long productId) {
+    return em.createQuery("select c from Cart c where c.user.id=:userId and c.product.id=:productId", Cart.class)
+            .setParameter("userId", userId)
+            .setParameter("productId", productId)
+            .getResultStream().findFirst();
   }
 }

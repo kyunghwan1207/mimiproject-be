@@ -1,11 +1,9 @@
 package com.example.emart.controller;
 
+import com.example.emart.config.auth.AuthCheckInterceptor;
 import com.example.emart.config.auth.PrincipalDetails;
 import com.example.emart.consts.SessionConst;
-import com.example.emart.dto.UserInfoResponseDto;
-import com.example.emart.dto.UserJoinRequestDTO;
-import com.example.emart.dto.UserLoginDTO;
-import com.example.emart.dto.UserLoginResponseDTO;
+import com.example.emart.dto.*;
 import com.example.emart.entity.User;
 import com.example.emart.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+
+import static com.example.emart.config.auth.AuthCheckInterceptor.isLogin;
 
 @RestController
 @Slf4j
@@ -78,9 +78,8 @@ public class UsersController {
   @GetMapping("/my-info")
   public ResponseEntity<UserInfoResponseDto> userInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
     HttpStatus status;
-    if (principalDetails == null || principalDetails.getUser() == null) {
-      status = HttpStatus.UNAUTHORIZED;
-      return new ResponseEntity<>(status);
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } else {
       status = HttpStatus.OK;
       System.out.println("principalDetails.getUser() = " + principalDetails.getUser());
@@ -89,13 +88,20 @@ public class UsersController {
       return new ResponseEntity<>(responseDto, status);
     }
   }
-
-//  // 이메일을 이용한 사용자 정보 조회
-//  @GetMapping("")
-//  public User getUserInfoByEmail(@RequestParam String email) {
-//    System.out.println("email = " + email);
-//    return userService.getUserInfoByEmail(email);
-//  }
+  @PostMapping("/check-email")
+  public ResponseEntity checkEmail(
+          @Valid @RequestBody UserCheckEmailRequestDto requestDto) {
+    System.out.println("requestDto = " + requestDto);
+    User finUser = userService.getUserInfoByEmail(requestDto.getEmail());
+    System.out.println("finUser = " + finUser);
+    HttpStatus status;
+    if (finUser == null) {
+      status = HttpStatus.OK;
+    } else {
+      status = HttpStatus.CONFLICT; // 409
+    }
+    return new ResponseEntity(status);
+  }
 
   // 회원정보 변경
   @PutMapping("/{id}")

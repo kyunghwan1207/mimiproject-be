@@ -24,4 +24,9 @@ public class ProductRepository {
         .setParameter("name", "%" + searchWord + "%")
         .getResultList();
   }
+
+  public Product save(Product product) {
+    em.persist(product);
+    return product;
+  }
 }

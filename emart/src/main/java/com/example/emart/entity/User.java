@@ -30,6 +30,9 @@ public class User extends BaseTime{
   private ROLE role;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private List<Cart> carts = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<LikeProduct> likeProducts = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -51,5 +54,11 @@ public class User extends BaseTime{
     this.address = address;
     this.phoneNumber = phoneNumber;
     this.role = role;
+  }
+
+  public void addCart(Cart cart) {
+    this.carts.add(cart);
+    cart.setUser(this);
+    System.out.println("after addCart() / cart.getUser() = " + cart.getUser());
   }
 }

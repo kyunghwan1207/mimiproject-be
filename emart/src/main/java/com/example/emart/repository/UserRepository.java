@@ -32,7 +32,7 @@ public class UserRepository {
   public Optional<Cart> getSameProduct(CartAddRequestDTO cartDTO) {
     return em.createQuery("SELECT c FROM Cart c WHERE c.product.id=:productId and c.user.id=:userId", Cart.class)
         .setParameter("productId", cartDTO.getProductId())
-        .setParameter("userId", cartDTO.getUserId())
         .getResultStream().findFirst();
   }
+
 }

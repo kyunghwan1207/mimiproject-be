@@ -1,5 +1,6 @@
 package com.example.emart.entity;
 
+import com.example.emart.dto.ProductResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,10 @@ public class Product extends BaseTime{
   private String description;
   private String brand;
 
-  @OneToMany(mappedBy = "product")
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+  private List<Cart> carts = new ArrayList<>();
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
   private List<EventProduct> eventProducts = new ArrayList<>();
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
@@ -42,4 +46,20 @@ public class Product extends BaseTime{
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
   private List<ProductComment> productComments = new ArrayList<>();
 
+  public Product(String name, String thumbnail, int price, double discount, String description, String brand, double rating, int qty) {
+    this.price = price;
+    this.qty = qty;
+    this.discount = discount;
+    this.rating = rating;
+    this.name = name;
+    this.thumbnail = thumbnail;
+    this.description = description;
+    this.brand = brand;
+  }
+
+  public void addCart(Cart cart) {
+    this.carts.add(cart);
+    cart.setProduct(this);
+    System.out.println("after addCart() / cart.getProduct() = " + cart.getProduct());
+  }
 }

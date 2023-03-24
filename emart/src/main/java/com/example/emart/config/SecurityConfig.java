@@ -15,6 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 // @Secured 어노테이션 활성화(controller에서 확인가능), @PreAuthorize 과 @PostAuthorize어노테이션 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] WHITE_LIST = {
+            "/api/v1/users/login", "/api/v1/users/join", "/",
+            "/api/login", "/api/v1/users/check-email"
+    };
+
+
     @Bean // 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
     public BCryptPasswordEncoder encodePassword(){
         return new BCryptPasswordEncoder();
@@ -24,9 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/**").authenticated()
+                .antMatchers(WHITE_LIST).permitAll()
                 .antMatchers("/api/v1/admins/**").access("hasRole('ROLE_ADMIN')")
-                .anyRequest().permitAll()
+                .antMatchers("/api/v1/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/api/login")

@@ -9,8 +9,9 @@ import { CartState } from '../../state/cartState';
 import style from './UserInfo.module.css';
 
 function UserInfo() {
-    const [userData, setUserData] = useState();
-    const [isLogin, setIsLogin] = useRecoilState(LoginState);
+    const [userData, setUserData] = useState({});
+    // const [isLogin, setIsLogin] = useRecoilState(LoginState);
+    const [isLogin, setIsLogin] = useState({});
     const [cartCnt, setCartCnt] = useRecoilState(CartState);
     const [userId, setUserId] = useRecoilState(UserIdState);
 
@@ -26,10 +27,20 @@ function UserInfo() {
         setUserId(0);
     }
     useEffect(() => {
-        const url = `http://localhost:3001/users/${userId}`
+        const url = `/api/v1/users/my-info`
         axios.get(url)
-        .then(res => res.data)
-        .then(res => setUserData(res));
+        .then(res => {
+            console.log('res = ', res);
+            if (res.status >= 200 && res.status < 300) {
+                setIsLogin(true);
+                return res.data;    
+            }
+        })
+        .then(res => setUserData(res))
+        .catch(err => {
+            console.log("error = ", err);
+            setIsLogin(false);
+        })
     }, [])
 
     return (
@@ -43,7 +54,7 @@ function UserInfo() {
                             <div>
                                 <div>
                                     <label>고객명</label>
-                                    <span> {userData.name}</span>
+                                    <span> {userData.username}</span>
                                 </div>
                                 <div>
                                     <label>이메일</label>    
@@ -51,7 +62,11 @@ function UserInfo() {
                                 </div>
                                 <div>
                                     <label>주소</label>
-                                    <span> {userData.roadAddress}</span>
+                                    <span> {userData.address}</span>
+                                </div>
+                                <div>
+                                    <label>전화번호</label>
+                                    <span> {userData.phoneNumber}</span>
                                 </div>
                             </div>
                             

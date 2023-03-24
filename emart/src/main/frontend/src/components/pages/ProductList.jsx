@@ -51,18 +51,29 @@ function ProductList({props}) {
     useEffect(() => {
         console.log('productList / props: ', props);
 
-        axios.get('http://localhost:3001/events')
-        .then((res) => res.data)
+        // axios.get('http://localhost:3001/events')
+        // .then((res) => res.data)
+        // .then((res) => {
+        //     setEventList(res)
+        //     setItemList(res[0].eventProductList)
+        //     navActiveState[1] = true;
+        //     setNavActiveState([...navActiveState]);
+        // })
+        // .catch((err) => console.log('[Error|GET] event List: ', err));
+        axios.get('/api/v1/products')
         .then((res) => {
-            setEventList(res)
-            setItemList(res[0].eventProductList)
-            navActiveState[1] = true;
-            setNavActiveState([...navActiveState]);
+            console.log("res: ", res);
+            console.log("res.data: ", res.data);
+            return res.data; // [ { name: "롯데빈츠" }, {} ...]
         })
-        .catch((err) => console.log('[Error|GET] event List: ', err));
+        .then(res => setEventItemList(res));
 
-        axios.get('http://localhost:3001/ads')
-        .then((res) => res.data)
+        axios.get('/api/v1/ads')
+        .then((res) => {
+            console.log("res: ", res);
+            console.log("res.data; ", res.data);
+            return res.data;
+        })
         .then((res) => setSlids(res))
         .catch((err) => console.log('[Error|GET] Slides: ', err));
 
