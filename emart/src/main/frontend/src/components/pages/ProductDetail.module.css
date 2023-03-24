@@ -1,0 +1,24 @@
+.productDetailBox {
+    width: 20px;
+    height: 20px;
+}
+.img{
+    width: 350px;
+    height: 300px;
+}
+
+.productBox button{
+    margin-left: 15px;
+}
+
+button:disabled{
+    color: #666666;
+}
+
+.cnt {
+    padding-left: 15px;
+}
+
+.minusBtn {
+    margin-right: 1px;
+}

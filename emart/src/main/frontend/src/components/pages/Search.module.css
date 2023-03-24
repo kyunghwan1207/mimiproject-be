@@ -1,0 +1,32 @@
+.searchInputBox {
+    width: 297px;
+}
+.searchInputBtn {
+    margin-left: 15px;
+}
+.productImg {
+    width: 359px;
+    height: 300px;
+}
+.productBox {
+    border-style: solid;
+    width: 359px;
+    margin-top: 5px;
+    margin-bottom: 80px;
+}
+.productBox p {
+    text-align: center;
+    font-weight: bold;
+}
+
+.productName {
+    font-weight: bold;
+}
+.productPrice{
+    color: red;
+    font-weight: bold;
+}
+.link {
+    text-decoration: none;
+    color: black
+}
