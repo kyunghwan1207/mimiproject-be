@@ -5,6 +5,7 @@ import com.example.emart.entity.enums.ORDER_STATUS;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Table(name = "delivery")
 @Getter @Setter
 @NoArgsConstructor
+@ToString
 public class Delivery extends BaseTime {
     @Id @GeneratedValue
     private Long id;

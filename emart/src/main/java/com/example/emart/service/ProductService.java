@@ -17,7 +17,7 @@ public class ProductService {
     return productRepository.getAllProductsList();
   }
 
-  public Product getProductDetail(Long id) {
+  public Product getProductById(Long id) {
     return productRepository.findById(id);
   }
 
@@ -36,5 +36,9 @@ public class ProductService {
     findProduct.getCarts().stream().forEach(c -> c.getId());
     System.out.println("after stream.forEach() / findProduct = " + findProduct);
     return findProduct;
+  }
+
+  public List<Product> getProductAll() {
+    return productRepository.findAll();
   }
 }

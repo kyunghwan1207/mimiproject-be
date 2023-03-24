@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponseDto {
+public class ProductManyResponseDto {
     private Long id;
     private String name;
     private String thumbnail;
@@ -17,15 +17,17 @@ public class ProductResponseDto {
     private double discount;
     private String brand;
     private double rating;
+    private int qty;
 
-    public ProductResponseDto(Product p) {
+    public ProductManyResponseDto(Product p) {
         this.id = p.getId();
         this.name = p.getName();
         this.thumbnail = p.getThumbnail();
+        this.description = p.getDescription();
         this.price = p.getPrice();
         this.discount = p.getDiscount();
         this.brand = p.getBrand();
         this.rating = p.getRating();
-        this.description = p.getDescription();
+        this.qty = p.getQty();
     }
 }

@@ -5,12 +5,16 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-animated-slider';
 import 'react-animated-slider/build/horizontal.css';
 import { formatMoney } from '../globalFunction/formatMoney';
+import { useRecoilState } from 'recoil';
+import { CartState } from '../../state/cartState';
 
 function ProductList({props}) {
     const [eventList, setEventList] = useState();
     const [eventItemList, setEventItemList] = useState();
     const [navActiveState, setNavActiveState] = useState([false, false, false, false]);
     const [slides, setSlids] = useState();
+
+    const [cartCnt, setCartCnt] = useRecoilState(CartState);
 
     let itemList = [];
     
@@ -60,6 +64,11 @@ function ProductList({props}) {
         //     setNavActiveState([...navActiveState]);
         // })
         // .catch((err) => console.log('[Error|GET] event List: ', err));
+
+        /*
+         * 03.24  
+         */
+        let startTime = new Date();
         axios.get('/api/v1/products')
         .then((res) => {
             console.log("res: ", res);
@@ -67,6 +76,7 @@ function ProductList({props}) {
             return res.data; // [ { name: "롯데빈츠" }, {} ...]
         })
         .then(res => setEventItemList(res));
+
 
         axios.get('/api/v1/ads')
         .then((res) => {
@@ -76,6 +86,17 @@ function ProductList({props}) {
         })
         .then((res) => setSlids(res))
         .catch((err) => console.log('[Error|GET] Slides: ', err));
+
+        axios.get('/api/v1/users/my-info')
+        .then((res) => {
+            console.log("my-info / res: ", res);
+            console.log("my-info / res.data: ", res.data);
+            setCartCnt(res.data.count);
+            console.log("Time while 3-times-api-call: ", new Date() - startTime); // 321
+        })
+        .catch((err) => console.log("[Error|GET] my-info: ", err));
+
+        
 
     }, [])
     return (

@@ -1,5 +1,6 @@
 package com.example.emart.repository;
 
+import com.example.emart.dto.CartProductDto;
 import com.example.emart.entity.Cart;
 import com.example.emart.entity.Product;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +22,17 @@ public class CartRepository {
     return cart;
   }
 
-  public List<Product> getAllCartProductList(Long userId) {
-    return em.createQuery("select c.product from Cart c where c.user.id=:userId", Product.class)
-        .setParameter("userId", userId)
-        .getResultList();
+  public List<CartProductDto> getAllCartProductList(Long userId) {
+    List<Object[]> resultList = em.createQuery("select c.product, c.qty from Cart c where c.user.id=:userId")
+            .setParameter("userId", userId)
+            .getResultList();
+    List<CartProductDto> cartProductDtos = new ArrayList<>();
+    for (Object[] result : resultList) {
+      System.out.println("result[0] = " + result[0]);
+      System.out.println("result[1] = " + result[1]);
+      cartProductDtos.add(new CartProductDto((Product) result[0], (int) result[1]));
+    }
+    return cartProductDtos;
   }
 
   public Cart getCartInfoById(Long id) {
@@ -39,5 +48,16 @@ public class CartRepository {
             .setParameter("userId", userId)
             .setParameter("productId", productId)
             .getResultStream().findFirst();
+  }
+
+  public int findCarCountWithUserId(Long userId) {
+    Long res = em.createQuery("select count(c) from Cart c where c.user.id=:userId", Long.class)
+            .setParameter("userId", userId)
+            .getSingleResult();
+    if (res != null) {
+      int ret = Integer.parseInt(res.toString());
+      return ret;
+    }
+    return Integer.valueOf(0);
   }
 }

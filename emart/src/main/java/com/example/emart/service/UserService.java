@@ -1,5 +1,6 @@
 package com.example.emart.service;
 
+import com.example.emart.dto.UserInfoResponseDto;
 import com.example.emart.dto.UserJoinRequestDTO;
 import com.example.emart.entity.Cart;
 import com.example.emart.entity.Product;

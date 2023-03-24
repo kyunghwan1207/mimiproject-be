@@ -1,5 +1,6 @@
 package com.example.emart.controller;
 
+import com.example.emart.dto.ProductManyResponseDto;
 import com.example.emart.dto.ProductResponseDto;
 import com.example.emart.entity.Product;
 import com.example.emart.service.ProductService;
@@ -21,14 +22,15 @@ public class ProductController {
   @GetMapping("")
   public ResponseEntity getAllProductsList() {
     List<Product> productList = productService.getAllProductsList();
-    List<ProductResponseDto> productResponseDtoList = productList.stream().map(p -> new ProductResponseDto(p)).collect(Collectors.toList());
+    List<ProductManyResponseDto> productResponseDtoList = productList.stream().map(p -> new ProductManyResponseDto(p)).collect(Collectors.toList());
     return new ResponseEntity(productResponseDtoList, HttpStatus.ACCEPTED); // 202
   }
 
   // 특정 상품 상세보기
   @GetMapping("/{id}")
-  public Product getProductDetail(@PathVariable Long id) {
-    return productService.getProductDetail(id);
+  public ResponseEntity getProductDetail(@PathVariable Long id) {
+    Product product = productService.getProductById(id);
+    return new ResponseEntity(new ProductResponseDto(product), HttpStatus.ACCEPTED);
   }
 
   // 상품명 검색 결과 리스트 조회

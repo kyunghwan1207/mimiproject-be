@@ -1,9 +1,6 @@
 package com.example.emart.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +8,7 @@ import javax.persistence.*;
 @Table(name = "carts")
 @Setter @Getter
 @NoArgsConstructor
+@ToString
 public class Cart extends BaseTime {
   @Id
   @GeneratedValue

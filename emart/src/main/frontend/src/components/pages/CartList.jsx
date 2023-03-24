@@ -15,14 +15,32 @@ function CartList() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!loginState){
+        // if(!loginState){
+        //     if(window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
+        //         navigate("/login", {})
+        //     } else {
+        //         navigate("/", {});
+        //     }
+        // }
+        
+        axios.get(`/api/v1/users/check-login-state`)
+        .then(res => {
+            console.log('res = ', res);
+            if (res.status >= 200 && res.status < 300) {
+                return res.data;    
+            }
+        })
+        .catch(err => {
+            console.log("error = ", err);
             if(window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
                 navigate("/login", {})
             } else {
                 navigate("/", {});
             }
-        }
-        axios.get(`http://localhost:3001/carts?userId=${userId}`)
+        })
+
+
+        axios.get(`/api/v1/carts`)
         .then((res) => {
             console.log('initT CartList / res: ', res);
             if(res.data == undefined || res.data.length === 0){

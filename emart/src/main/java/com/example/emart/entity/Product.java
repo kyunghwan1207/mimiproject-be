@@ -1,10 +1,9 @@
 package com.example.emart.entity;
 
-import com.example.emart.dto.ProductResponseDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,8 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Setter
-@Getter
+@Setter @Getter
 @NoArgsConstructor
 public class Product extends BaseTime{
   @Id

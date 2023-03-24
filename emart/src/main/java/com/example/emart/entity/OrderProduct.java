@@ -3,6 +3,7 @@ package com.example.emart.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "order_product")
 @Getter @Setter
 @NoArgsConstructor
+@ToString
 public class OrderProduct extends BaseTime {
     @Id @GeneratedValue
     private Long id;

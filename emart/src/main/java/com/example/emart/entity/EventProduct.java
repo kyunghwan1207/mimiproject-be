@@ -3,6 +3,7 @@ package com.example.emart.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "event_product")
 @Setter @Getter
 @NoArgsConstructor
+@ToString
 public class EventProduct extends BaseTime {
   @Id
   @GeneratedValue

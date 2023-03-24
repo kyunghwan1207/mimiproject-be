@@ -7,7 +7,7 @@ import { formatMoney } from '../globalFunction/formatMoney';
 
 function CartItem({props, delCheck, setDelCheck}) {
     
-    const productId = props.productId;
+    const productId = props.id;
     const [product, setProduct] = useState();
     const [count, setCount] = useState(props.qty);
 
@@ -33,7 +33,7 @@ function CartItem({props, delCheck, setDelCheck}) {
         setCount(count + 1);
     }
     useEffect(() => {
-        axios.get(`http://localhost:3001/products/${productId}`)
+        axios.get(`/api/v1/products/${productId}`)
         .then((res) => res.data)
         .then((res) => setProduct(res));
     }, [])

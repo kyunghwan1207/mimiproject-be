@@ -1,24 +1,18 @@
 package com.example.emart;
 
 import com.example.emart.entity.Advertisement;
+import com.example.emart.entity.Event;
 import com.example.emart.entity.Product;
-import com.example.emart.service.AdvertisementService;
-import com.example.emart.service.CartService;
-import com.example.emart.service.ProductService;
-import com.example.emart.service.UserService;
-import org.assertj.core.api.Assertions;
+import com.example.emart.service.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class EmartApplicationTests {
@@ -26,6 +20,9 @@ class EmartApplicationTests {
   AdvertisementService advertisementService;
   @Autowired
   private ProductService productService;
+
+  @Autowired
+  private EventService eventService;
 
   @Test
   @Rollback(value = false)
@@ -179,5 +176,20 @@ class EmartApplicationTests {
     products.add(productService.addProduct(product10));
 
     assertThat(products.size()).isEqualTo(10);
+  }
+
+  @Test
+  @Rollback(value = false)
+  void eventInit() {
+    Event event1 = new Event("신상품");
+    Event event2 = new Event("1+1");
+    Event event3 = new Event("2+1");
+
+    List<Event> events = new ArrayList<>();
+    events.add(eventService.addEvent(event1));
+    events.add(eventService.addEvent(event2));
+    events.add(eventService.addEvent(event3));
+
+    assertThat(events.size()).isEqualTo(3);
   }
 }

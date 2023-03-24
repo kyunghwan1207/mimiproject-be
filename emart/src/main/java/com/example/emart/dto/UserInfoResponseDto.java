@@ -13,13 +13,12 @@ public class UserInfoResponseDto {
     private String username;
     private String address;
     private String phoneNumber;
-
-    public static UserInfoResponseDto fromEntity(User user) {
-        return new UserInfoResponseDto(
-                user.getEmail(),
-                user.getUsername(),
-                user.getAddress(),
-                user.getPhoneNumber()
-        );
+    private int count; // 장바구니 담은 상품 가짓수
+    public UserInfoResponseDto(User user, int count) {
+        this.email = user.getEmail();
+        this.username = user.getUsername();
+        this.address = user.getAddress();
+        this.phoneNumber = user.getPhoneNumber();
+        this.count = count;
     }
 }

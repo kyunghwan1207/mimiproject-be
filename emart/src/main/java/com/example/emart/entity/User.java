@@ -4,6 +4,7 @@ import com.example.emart.entity.enums.ROLE;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,8 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Setter
-@Getter
+@Setter @Getter
 @NoArgsConstructor
 public class User extends BaseTime{
   @Id

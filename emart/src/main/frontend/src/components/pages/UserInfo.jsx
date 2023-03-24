@@ -25,6 +25,12 @@ function UserInfo() {
         setIsLogin(false); 
         setCartCnt(0);
         setUserId(0);
+        
+        axios.get(`/api/v1/users/logout`)
+        .then(res => alert("로그아웃 되었습니다."))
+        .catch(err => alert("로그아웃에 실패했습니다."));
+        
+        
     }
     useEffect(() => {
         const url = `/api/v1/users/my-info`
@@ -33,6 +39,7 @@ function UserInfo() {
             console.log('res = ', res);
             if (res.status >= 200 && res.status < 300) {
                 setIsLogin(true);
+                setCartCnt(res.data.count);
                 return res.data;    
             }
         })

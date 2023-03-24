@@ -21,7 +21,7 @@ public class EventsController {
   // 전체 이벤트 리스트 조회
   @GetMapping("")
   public List<Event> getEvents() {
-    return eventService.getEvents();
+    return eventService.getEventAll();
   }
 
   // 특정 이벤트 진행 상품 리스트 조회

@@ -1,6 +1,7 @@
 package com.example.emart.service;
 
 import com.example.emart.dto.CartAddRequestDTO;
+import com.example.emart.dto.CartProductDto;
 import com.example.emart.entity.Cart;
 import com.example.emart.entity.Product;
 import com.example.emart.repository.CartRepository;
@@ -21,7 +22,7 @@ public class CartService {
   private final UserRepository userRepository;
 
 
-  public List<Product> getAllCartProductList(Long userId) {
+  public List<CartProductDto> getAllCartProductList(Long userId) {
     return cartRepository.getAllCartProductList(userId);
   }
 
@@ -54,5 +55,8 @@ public class CartService {
   public void updateQty(Cart cart, int newQty) {
     cart.setQty(newQty);
 
+  }
+  public int findCartCountWithUserId(Long userId) {
+    return cartRepository.findCarCountWithUserId(userId);
   }
 }

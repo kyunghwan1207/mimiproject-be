@@ -14,12 +14,16 @@ import java.util.List;
 public class EventService {
   private final EventRepository eventRepository;
 
-  public List<Event> getEvents() {
-    return eventRepository.getEvents();
+  public List<Event> getEventAll() {
+    return eventRepository.findAll();
   }
 
   public List<Product> getEventProducts(Long id) {
     Event event= eventRepository.getEvent(id);
     return eventRepository.getEventProducts(event);
+  }
+  @Transactional
+  public Event addEvent(Event event1) {
+    return eventRepository.save(event1);
   }
 }

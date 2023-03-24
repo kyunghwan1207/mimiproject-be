@@ -1,10 +1,10 @@
 package com.example.emart.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "event")
@@ -16,4 +16,12 @@ public class Event extends BaseTime {
   private Long id;
 
   private String name;
+
+  @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+  private List<EventProduct> eventProducts = new ArrayList<>();
+
+  public Event(String name) {
+    this.name = name;
+  }
+
 }

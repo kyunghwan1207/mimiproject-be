@@ -3,6 +3,9 @@ package com.example.emart.controller;
 import com.example.emart.config.auth.AuthCheckInterceptor;
 import com.example.emart.config.auth.PrincipalDetails;
 import com.example.emart.dto.CartAddRequestDTO;
+import com.example.emart.dto.CartProductDto;
+import com.example.emart.dto.CartProductResponseDto;
+import com.example.emart.dto.ProductManyResponseDto;
 import com.example.emart.entity.Cart;
 import com.example.emart.entity.Product;
 import com.example.emart.entity.User;
@@ -18,6 +21,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.example.emart.config.auth.AuthCheckInterceptor.*;
 
@@ -32,8 +37,14 @@ public class CartsController {
 
   // 특정 사용자 장바구니에서 전체 상품 리스트 조회
   @GetMapping("")
-  public List<Product> getAllCartProductList(@RequestParam Long userId) {
-    return cartService.getAllCartProductList(userId);
+  public ResponseEntity getAllCartProductList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    List<CartProductDto> cartProductDtos = cartService.getAllCartProductList(principalDetails.getUser().getId());
+    List<CartProductResponseDto> responseDtos =
+            cartProductDtos.stream().map(cp -> new CartProductResponseDto(cp.getProduct(), cp.getQty())).collect(Collectors.toList());
+    return new ResponseEntity(responseDtos, HttpStatus.ACCEPTED);
   }
 
   // 특정 사용자 장바구니에 상품 담기

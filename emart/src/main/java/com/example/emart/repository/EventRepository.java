@@ -12,7 +12,7 @@ import java.util.List;
 public class EventRepository {
   private final EntityManager em;
 
-  public List<Event> getEvents() {
+  public List<Event> findAll() {
     return em.createQuery("SELECT e FROM Event e", Event.class).getResultList();
   }
 
@@ -25,4 +25,10 @@ public class EventRepository {
         .setParameter("event", event)
         .getResultList();
   }
+
+  public Event save(Event event) {
+    em.persist(event);
+    return event;
+  }
+
 }

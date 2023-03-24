@@ -29,4 +29,9 @@ public class ProductRepository {
     em.persist(product);
     return product;
   }
+
+  public List<Product> findAll() {
+    return em.createQuery("select p from Product p", Product.class)
+            .getResultList();
+  }
 }

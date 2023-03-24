@@ -5,6 +5,7 @@ import com.example.emart.config.auth.PrincipalDetails;
 import com.example.emart.consts.SessionConst;
 import com.example.emart.dto.*;
 import com.example.emart.entity.User;
+import com.example.emart.service.CartService;
 import com.example.emart.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import static com.example.emart.config.auth.AuthCheckInterceptor.isLogin;
 @RequestMapping("/api/v1/users")
 public class UsersController {
   private final UserService userService;
+  private final CartService cartService;
 
   // 회원가입
   @PostMapping("/join")
@@ -75,19 +77,33 @@ public class UsersController {
     System.out.println("id = " + id);
     return userService.getUserInfoById(id);
   }
+  /**
+   * 사용자 정보 + 장바구니 담은 상품 개수 함께 return
+   * */
   @GetMapping("/my-info")
   public ResponseEntity<UserInfoResponseDto> userInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
     HttpStatus status;
     if (!isLogin(principalDetails)) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } else {
-      status = HttpStatus.OK;
-      System.out.println("principalDetails.getUser() = " + principalDetails.getUser());
-      System.out.println("principalDetails.getUsername() = " + principalDetails.getUsername());
-      UserInfoResponseDto responseDto = UserInfoResponseDto.fromEntity(principalDetails.getUser());
+      status = HttpStatus.ACCEPTED;
+      int cartCount = cartService.findCartCountWithUserId(principalDetails.getUser().getId());
+      System.out.println("cartCount = " + cartCount);
+      UserInfoResponseDto responseDto = new UserInfoResponseDto(principalDetails.getUser(), cartCount);
       return new ResponseEntity<>(responseDto, status);
     }
   }
+  @GetMapping("/check-login-state")
+  public ResponseEntity checkLoginState(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    HttpStatus status = HttpStatus.OK;
+    if (!isLogin(principalDetails)) {
+      status = HttpStatus.UNAUTHORIZED;
+    }
+    return new ResponseEntity(status);
+  }
+  /**
+   * 이메일 중복 검사
+   * */
   @PostMapping("/check-email")
   public ResponseEntity checkEmail(
           @Valid @RequestBody UserCheckEmailRequestDto requestDto) {

@@ -1,10 +1,7 @@
 package com.example.emart.entity;
 
 import com.example.emart.entity.enums.ORDER_STATUS;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;

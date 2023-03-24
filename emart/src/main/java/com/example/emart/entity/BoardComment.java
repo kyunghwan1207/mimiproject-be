@@ -4,6 +4,7 @@ import com.example.emart.entity.enums.REPORT_TYPE;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "board_comment")
 @Getter @Setter
 @NoArgsConstructor
+@ToString
 public class BoardComment extends BaseTime {
     @Id
     @GeneratedValue
