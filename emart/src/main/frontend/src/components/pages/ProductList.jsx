@@ -141,8 +141,6 @@ function ProductList({props}) {
                     }
                 </div>
             </nav>
-            
-            
         </>
     );
 }

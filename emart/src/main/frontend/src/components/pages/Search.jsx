@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEvent, useCallback } from 'react';
 import style from './Search.module.css';
 import axios from 'axios';
 import { formatMoney } from '../globalFunction/formatMoney';
 import { Link } from 'react-router-dom';
+import Modal from "react-modal";
+import Inputter from './Inputter';
+
+
 function Search() {
     const [searchText, setSearchText] = useState('');
     const [products, setProducts] = useState();
@@ -24,6 +28,31 @@ function Search() {
         .then((res) => res.data)
         .then((res) => setProducts(res))
     }, [])
+
+    /*
+     * 랜덤 비밀번호 입력기 생성 코드 시작 
+     */
+    const [isOpen, setIsOpen] = useState(false); 
+    const [password, setPassword] = useState("");
+    const toggle = () => {
+        setIsOpen(true);
+        setPassword("");
+    }
+
+    const modalStyles = {
+        overlay: {
+            backgroundColor: "rgba(0,0,0,0.5)",
+        },
+        content: {
+            left: "0",
+            margin: "auto",
+            width: "388px",
+            height: "300px",
+            padding: "0",
+            overflow: "hidden",
+        },
+    };
+    // 끝
     return (
         <div>
             <h3>검색</h3>
@@ -42,6 +71,15 @@ function Search() {
                     
                 ))
             }
+            <input className={style.address} value={password} readOnly placeholder='인증비밀번호 6자리 입력해주세요' onClick={toggle}/>
+            <Modal isOpen={isOpen} ariaHideApp={false} style={modalStyles}>
+                <Inputter 
+                    password={password}
+                    setIsOpen={setIsOpen}
+                    setPassword={setPassword}
+                />
+            </Modal>
+            
         </div>
     );
 }
