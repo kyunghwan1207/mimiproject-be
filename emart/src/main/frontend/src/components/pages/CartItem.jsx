@@ -5,7 +5,7 @@ import { CartState } from '../../state/cartState';
 import { useRecoilState } from 'recoil';
 import { formatMoney } from '../globalFunction/formatMoney';
 
-function CartItem({props, delCheck, setDelCheck}) {
+function CartItem({props, delCheck, setDelCheck, setTotalPrice, totalPrice}) {
     
     const productId = props.id;
     const [product, setProduct] = useState();
@@ -15,22 +15,34 @@ function CartItem({props, delCheck, setDelCheck}) {
 
     const handleDeleteBtnClick = async () => {
         if(window.confirm("장바구니에서 삭제하시겠습니까?")){
-            const url = `http://localhost:3001/carts/${props.id}`;
+            const url = `/api/v1/carts/${props.cartId}`;
             let response = await axios.delete(url);
+            
             console.log('delete / response: ', response);
             if (response.status >= 200 && response.status < 300) {
                 alert("장바구니에서 삭제되었습니다.");
                 setDelCheck(!delCheck);
                 setCartCnt(cartCnt - 1);
                 return;
+            } else {
+                alert("장바구니에서 삭제에 실패했습니다.");
+                return;
             }
         } 
     }
     const handleMinusBtnClick = () => {
         setCount(count - 1);
+        setTotalPrice(totalPrice - product.price);
     }
     const handlePlushBtnClick = () => {
-        setCount(count + 1);
+        if (props.productQty > count) {
+            setCount(count + 1);
+            setTotalPrice(totalPrice + product.price);
+        } else {
+            alert("상품 재고가 부족해서 더이상 장바구니에 담을 수 없습니다.");
+            return;
+        }
+        
     }
     useEffect(() => {
         axios.get(`/api/v1/products/${productId}`)
@@ -52,24 +64,28 @@ function CartItem({props, delCheck, setDelCheck}) {
                     <span>{product.name}</span>
                 </div>
                 <div>
-                    <label>가격</label>
-                    <span>{formatMoney(product.price * count)}</span>    
-                </div>
-                
+                    <label>제품 가격</label>
+                    <span>{formatMoney(product.price)}</span>
+                </div>                
                 <div className={style.plusMinusBtn} >
-                <div>
+                    <div>
 
-                </div>
-                <label>
-                    담은 갯수
-                </label>
-                    
+                    </div>
+                    <label>
+                        담은 갯수
+                    </label>
                     <button
                         onClick={handleMinusBtnClick}
                         disabled={count === 1 ? true : false}
                     >-</button>
                     {count}
                     <button onClick={handlePlushBtnClick}>+</button>
+                </div>
+                <div>
+    
+                    <label>총 가격</label>
+                    <span>{formatMoney(product.price * count)}</span>    
+    
                 </div>
             </div>
         }

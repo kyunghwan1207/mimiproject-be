@@ -66,9 +66,9 @@ function EditUserInfo() {
                      "newEmail": newEmail
                     }
                 });
-            console.log("edit emial post/res: ", res);
+            console.log("edit email post/res: ", res);
         } catch (err) {
-            console.log("edit emial post/err: ", err);
+            console.log("edit email post/err: ", err);
         }
         
     }
@@ -143,7 +143,7 @@ function EditUserInfo() {
         }
 
     }
-    
+
     const handlePasswordEditBtnClick = async (e) => {
         e.preventDefault();
         // 비밀번호 변경 post 요청

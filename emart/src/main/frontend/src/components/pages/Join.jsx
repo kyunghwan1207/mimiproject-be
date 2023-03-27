@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import style from './Join.module.css';
 import Modal from 'react-modal';
 import DaumPostcode from 'react-daum-postcode';
+import Inputter from './Inputter';
 
 function Join() {
     const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ function Join() {
     const [roadAddress, setRoadAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isOpen, setIsOpen] = useState(false); 
+    const [simplePassword, setSimplePassword] = useState('');
 
     const emailRef = useRef('');
     const namedRef = useRef('');
@@ -88,7 +90,8 @@ function Join() {
             "email": email,
             "password": password,
             "address": roadAddress,
-            "phoneNumber": phoneNumber
+            "phoneNumber": phoneNumber,
+            "simplePassword": simplePassword
         }
         console.log('before post data: ', data);
         try {
@@ -203,7 +206,7 @@ function Join() {
             
             <div>
                 <label>이메일: </label>
-                <input name='email'ref={emailRef} placeholder='이메일을 입력해주세요' value={email} onChange={handleChangeEmail}/>
+                <input name='email' ref={emailRef} placeholder='이메일을 입력해주세요' value={email} onChange={handleChangeEmail}/>
                 <span className={style.duplicateCheckBtn}>
                     <button onClick={handleClickCheckDuplicateBtn}>중복검사</button>
                     {
@@ -217,6 +220,17 @@ function Join() {
                 <input name='phoneNumber' placeholder='전화번호를 입력해주세요' value={phoneNumber} onChange={handleChangePhoneNumber}/>    
             </div>
             <div>
+                <label>결제 간편 비밀번호(6자리):</label>
+                <input className={style.address} value={simplePassword} type="password" readOnly placeholder='인증비밀번호 6자리 입력해주세요' onClick={toggle}/>
+                <Modal isOpen={isOpen} ariaHideApp={false} style={modalStyles}>
+                    <Inputter 
+                        password={simplePassword}
+                        setIsOpen={setIsOpen}
+                        setPassword={setSimplePassword}
+                    />
+                </Modal>
+            </div>
+            <div>
                 <label>비밀번호: </label>
                 <input type="password" name='password' ref={passwordRef} placeholder='비밀번호를 입력해주세요' value={password} onChange={handleChangePassword}/>  
             </div>
@@ -224,8 +238,8 @@ function Join() {
                 <label>비밀번호 확인: </label>
                 <input type="password" name='confirmPassword' ref={confirmPasswordRef} placeholder='비밀번호를 다시 입력해주세요' value={confirmPassword} onChange={handleChangeConfirmPassword}/>  
             </div>    
-                <button className={style.joinBtn} onClick={handleJoinFormSubmit}>회원가입</button>
-                <button className={style.loginBtn} onClick={handleMoveLoginClick}>로그인</button>
+                <button className={style.joinBtn} onClick={handleJoinFormSubmit}>회원가입 하기</button>
+                <button className={style.loginBtn} onClick={handleMoveLoginClick}>로그인 페이지로 이동하기</button>
         </>
     );
 }

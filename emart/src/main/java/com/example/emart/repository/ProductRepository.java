@@ -1,5 +1,6 @@
 package com.example.emart.repository;
 
+import com.example.emart.entity.LikeProduct;
 import com.example.emart.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -32,6 +33,12 @@ public class ProductRepository {
 
   public List<Product> findAll() {
     return em.createQuery("select p from Product p", Product.class)
+            .getResultList();
+  }
+
+  public List<Product> findProductInLikeProductByUserId(Long userId) {
+    return em.createQuery("select p from LikeProduct lp join fetch lp.product p where lp.user.id=:userId", Product.class)
+            .setParameter("userId", userId)
             .getResultList();
   }
 }

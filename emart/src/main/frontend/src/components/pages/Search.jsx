@@ -15,16 +15,25 @@ function Search() {
     }
     const handleSearchBtnClick = () => {
         let newProducts = []
-        for(let i = 0; i < products.length; i++){
-            if(products[i].name.includes(searchText)){
-                console.log('products: ', products[i].name);
-                newProducts.push(products[i]);
-            }
-        }
-        setProducts(newProducts);
+        axios.get(`/api/v1/products/search?name=${searchText}`)
+        .then(res => {
+            console.log("handleSearchBtnClick / res: ", res);
+            return res.data;
+        })
+        .then(res =>
+            setProducts(res)
+        )
+        .catch(err => console.log("error: ", err));
+        // for(let i = 0; i < products.length; i++){
+        //     if(products[i].name.includes(searchText)){
+        //         console.log('products: ', products[i].name);
+        //         newProducts.push(products[i]);
+        //     }
+        // }
+        // setProducts(newProducts);
     }
     useEffect(() => {
-        axios.get('http://localhost:3001/products')
+        axios.get('/api/v1/products')
         .then((res) => res.data)
         .then((res) => setProducts(res))
     }, [])
@@ -71,15 +80,6 @@ function Search() {
                     
                 ))
             }
-            <input className={style.address} value={password} readOnly placeholder='인증비밀번호 6자리 입력해주세요' onClick={toggle}/>
-            <Modal isOpen={isOpen} ariaHideApp={false} style={modalStyles}>
-                <Inputter 
-                    password={password}
-                    setIsOpen={setIsOpen}
-                    setPassword={setPassword}
-                />
-            </Modal>
-            
         </div>
     );
 }

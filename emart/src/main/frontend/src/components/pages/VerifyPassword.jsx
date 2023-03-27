@@ -63,7 +63,7 @@ function VerifyPassword(test) {
     return (
         <div>
             <h5>현재 비밀번호를 입력해주세요</h5>
-            <input value={password} onChange={handlePasswordChange}/>
+            <input value={password} type="password" onChange={handlePasswordChange}/>
             <button onClick={handleCompBtnClick}>완료</button>
         </div>
     );

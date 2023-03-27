@@ -13,12 +13,14 @@ public class UserInfoResponseDto {
     private String address;
     private String phoneNumber;
     private int count; // 장바구니 담은 상품 가짓수
+    private int epay;
     public UserInfoResponseDto(User user, int count) {
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.address = user.getAddress();
         this.phoneNumber = user.getPhoneNumber();
         this.count = count;
+        this.epay = user.getEpay();
     }
     public UserInfoResponseDto(String email, String username, String address, String phoneNumber) {
         this.email = email;

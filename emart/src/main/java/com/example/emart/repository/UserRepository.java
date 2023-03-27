@@ -35,4 +35,10 @@ public class UserRepository {
         .getResultStream().findFirst();
   }
 
+  public void updateEpayById(Long userId, int finalEpay) {
+      em.createQuery("update User u set u.epay=:epay where u.id=:userId")
+              .setParameter("epay", finalEpay)
+              .setParameter("userId", userId)
+              .executeUpdate();
+    }
 }

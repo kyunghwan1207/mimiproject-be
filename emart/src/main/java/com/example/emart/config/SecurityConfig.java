@@ -17,7 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHITE_LIST = {
             "/api/v1/users/login", "/api/v1/users/join", "/",
-            "/api/login", "/api/v1/users/check-email"
+            "/api/login", "/api/v1/users/check-email", "/api/v1/products", "/api/v1/products/search?**"
     };
 
 
@@ -30,9 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers(WHITE_LIST).permitAll()
                 .antMatchers("/api/v1/admins/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/api/v1/**").authenticated()
+                .antMatchers(WHITE_LIST).permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/api/login")

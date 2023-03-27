@@ -54,20 +54,7 @@ function ProductList({props}) {
     }
     useEffect(() => {
         console.log('productList / props: ', props);
-
-        // axios.get('http://localhost:3001/events')
-        // .then((res) => res.data)
-        // .then((res) => {
-        //     setEventList(res)
-        //     setItemList(res[0].eventProductList)
-        //     navActiveState[1] = true;
-        //     setNavActiveState([...navActiveState]);
-        // })
-        // .catch((err) => console.log('[Error|GET] event List: ', err));
-
-        /*
-         * 03.24  
-         */
+        
         let startTime = new Date();
         axios.get('/api/v1/products')
         .then((res) => {

@@ -17,7 +17,21 @@ public class ProductResponseDto {
     private double discount;
     private String brand;
     private double rating;
+    private boolean like;
+    private int qty;
 
+    public ProductResponseDto(Product p, boolean like) {
+        this.id = p.getId();
+        this.name = p.getName();
+        this.thumbnail = p.getThumbnail();
+        this.price = p.getPrice();
+        this.discount = p.getDiscount();
+        this.brand = p.getBrand();
+        this.rating = p.getRating();
+        this.description = p.getDescription();
+        this.qty = p.getQty();
+        this.like = like;
+    }
     public ProductResponseDto(Product p) {
         this.id = p.getId();
         this.name = p.getName();
@@ -27,5 +41,6 @@ public class ProductResponseDto {
         this.brand = p.getBrand();
         this.rating = p.getRating();
         this.description = p.getDescription();
+        this.qty = p.getQty();
     }
 }

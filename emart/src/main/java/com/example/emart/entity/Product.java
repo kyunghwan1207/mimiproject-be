@@ -60,4 +60,8 @@ public class Product extends BaseTime{
     cart.setProduct(this);
     System.out.println("after addCart() / cart.getProduct() = " + cart.getProduct());
   }
+  public void addLikeProduct(LikeProduct likeProduct) {
+    this.likeProducts.add(likeProduct);
+    likeProduct.setProduct(this);
+  }
 }

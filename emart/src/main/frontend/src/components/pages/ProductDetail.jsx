@@ -14,7 +14,7 @@ function ProductDetail() {
     const [product, setProduct] = useState();
     const [count, setCount] = useState(1);
     const [isLogin, setIsLogin] = useState(false);
-
+    const [status, setStatus] = useState(400);
     const [cartCnt, setCartCnt] = useRecoilState(CartState);
     // const loginState = useRecoilValue(LoginState);
     // const userId = useRecoilValue(UserIdState);
@@ -22,7 +22,7 @@ function ProductDetail() {
     
 
     const handleClikAddCart = async () => {
-        if(!isLogin){
+        if(status === 200){
             if(window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
                 navigate("/login", {})
             }
@@ -55,57 +55,65 @@ function ProductDetail() {
             return;
         }
 
-
-        // 장바구니 정보 조회
-        // let cartData = await axios.get(`http://localhost:3001/carts?userId=${userId}&productId=${productId.id}`);
-        // let response = '';
-        // // 장바구니에 존재하지 않는데이터라면, 새로담기
-        // if (cartData.data == undefined || cartData.data.length === 0){
-        //     response = await axios.post(`http://localhost:3001/carts`,{
-        //         "productId": Number(productId.id),
-        //         "qty": count
-        //     })
-        //     setCartCnt(cartCnt + 1);
-        // } else {
-        //     // 장바구니 데이터가 이미 있는 경우, 추가로 담기(qty++)
-        //     console.log('cartData: ', cartData);
-        //     response = cartData.data[0];
-        //     const newQty = response.qty + count;
-        //     response = await axios.put(`http://localhost:3001/carts/${response.id}` ,{
-        //         "id": response.id,
-        //         "productId": response.productId,
-        //         "qty": newQty
-        //     })
-        // }
-        // console.log("after add cart response: ", response);
-        // if(window.confirm("장바구니에 담겼습니다! 장바구니 목록을 확인하시겠습니까?")){
-        //     navigate("/cart", {});
-        // } 
-        // return
     }
     const handleMinusBtnClick = () => {
         setCount(count-1);
     }
     const handlePlushBtnClick = () => {
-        setCount(count+1);
+        if (product.qty > count) {
+            setCount(count+1);
+        } else {
+            alert("재고가 부족하여 더이상 장바구니에 담을 수 없습니다.");
+            return;
+        }
+        
+    }
+    const handleHartClick = async (state) => {
+        console.log("handleHartClick / state: ", state);
+        console.log("handleHartClick / productId.id: ", productId.id);
+        if(status === 200){
+            if(window.confirm("로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?")){
+                navigate("/login", {})
+            }
+            return
+        }
+        try {
+            let res = await axios(
+                '/api/v1/products/like-product', 
+            {
+                method: 'post',
+                headers: {'Content-Type': 'application/json'},
+                data: JSON.stringify({
+                    "productId": productId.id,
+                    "state": state
+                })
+            });
+            console.log("join res: ", res);
+            if(res.status >= 200 && res.status < 300){
+                axios.get(`/api/v1/products/${productId.id}`)
+                    .then((res) => {
+                        console.log("product Info | GET / res: ", res);
+                        console.log("product Info | GET / res.data: ", res.data);
+                        return res.data;
+                    })
+                    .then((res) => setProduct(res))
+            } else {
+                return;
+            }
+
+        } catch (err) {
+            console.log("clickHart err: ", err);
+        }
     }
     useEffect(() => {
-        axios.get(`/api/v1/users/my-info`)
-        .then(res => {
-            console.log('res = ', res);
-            if (res.status >= 200 && res.status < 300) {
-                setIsLogin(true);
-                return res.data;    
-            }
+        console.log("ProductDetail/useEffect call");
+        axios.get(`/api/v1/products/${productId.id}`)
+        .then((res) => {
+            console.log("product Info | GET / res: ", res);
+            console.log("product Info | GET / res.data: ", res.data);
+            setStatus(res.status);
+            return res.data;
         })
-        .catch(err => {
-            console.log("error = ", err);
-            setIsLogin(false);
-        })
-
-        const url = `/api/v1/products/${productId.id}`;
-        axios.get(url)
-        .then((res) => res.data)
         .then((res) => setProduct(res))
     }, [])
     return (
@@ -118,6 +126,23 @@ function ProductDetail() {
                     <div>
                         <label>가격</label>
                         <span>{formatMoney(product.price * count)}</span>
+                    </div>
+                    <div>
+                        <label>평점</label>
+                        <img src='https://velog.velcdn.com/images/kyunghwan1207/post/822b8da4-5e7c-4d17-88d8-b575e71aa0b4/image.png' style={{width: '25px'}}/>
+                        <span>{product.rating}</span>
+                    </div>
+                    <div>
+                    {
+                        product.like ? 
+                        <img src='https://velog.velcdn.com/images/kyunghwan1207/post/bcad0b56-df93-4ad5-83b8-8b0f8e2b3098/image.png' onClick={() => handleHartClick(false)} style={{width: '25px'}}/>
+                        :
+                        <img src='https://velog.velcdn.com/images/kyunghwan1207/post/3c2fab46-23f7-4bd2-a486-7d4a3180cc6d/image.png' onClick={() => handleHartClick(true)} style={{width: '25px'}} />
+                    }
+                    </div>
+                    <div>
+                        <label>재고</label>
+                        <span>{product.qty} 개</span>
                     </div>
                     <div>
                         <label>수량 </label>

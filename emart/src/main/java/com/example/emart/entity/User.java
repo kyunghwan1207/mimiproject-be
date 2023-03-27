@@ -50,18 +50,24 @@ public class User extends BaseTime{
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<ProductComment> productComments = new ArrayList<>();
 
-  public User(String username, String email, String password, String address, String phoneNumber, ROLE role) {
+  public User(String username, String email, String password, String address, String phoneNumber, ROLE role, String simplePassword) {
     this.username = username;
     this.email = email;
     this.password = password;
     this.address = address;
     this.phoneNumber = phoneNumber;
     this.role = role;
+    this.simplePassword = simplePassword;
   }
 
   public void addCart(Cart cart) {
     this.carts.add(cart);
     cart.setUser(this);
     System.out.println("after addCart() / cart.getUser() = " + cart.getUser());
+  }
+
+  public void addLikeProduct(LikeProduct likeProduct) {
+    this.likeProducts.add(likeProduct);
+    likeProduct.setUser(this);
   }
 }

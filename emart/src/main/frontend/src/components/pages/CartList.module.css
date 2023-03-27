@@ -1,0 +1,10 @@
+.totalPrice_div {
+    margin-bottom: 100px;
+}
+
+.totalPrice_value {
+    font: bold;
+    font-size: large;
+    color:   black;
+    font-weight: bold;
+}

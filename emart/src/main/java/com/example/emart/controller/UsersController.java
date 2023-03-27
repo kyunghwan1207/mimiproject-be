@@ -1,7 +1,6 @@
 package com.example.emart.controller;
 
 import com.example.emart.config.auth.PrincipalDetails;
-import com.example.emart.consts.SessionConst;
 import com.example.emart.dto.*;
 import com.example.emart.entity.User;
 import com.example.emart.service.CartService;
@@ -12,14 +11,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.awt.event.PaintEvent;
 import java.io.IOException;
 
 import static com.example.emart.config.auth.AuthCheckInterceptor.isLogin;
@@ -104,10 +99,6 @@ public class UsersController {
   }
 
   // 회원정보 변경
-  @PutMapping("/{id}")
-  public User changeUserInfo(@Valid @RequestBody UserJoinRequestDTO userDTO, @PathVariable Long id) {
-    return userService.changeUserInfo(userDTO, id);
-  }
   @PostMapping("/edit-email")
   public ResponseEntity<UserInfoResponseDto> editEmail(
           @Valid @RequestBody EditEmailRequestDto requestDto,
@@ -117,9 +108,9 @@ public class UsersController {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
     try {
-      User user = userService.changeEmail(requestDto.getNewEmail(), principalDetails.getUser().getId());
+      User user = userService.changeEmail(requestDto.getNewEmail(), principalDetails.getUser().getId(), principalDetails);
       UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
-      principalDetails.getUser().setEmail(user.getEmail());
+
       return new ResponseEntity(responseDto, HttpStatus.OK);
     } catch (Exception e) {
       log.info("Exception= ", e);
@@ -135,9 +126,8 @@ public class UsersController {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
     try {
-      User user = userService.changeUserName(requestDto.getNewUserName(), principalDetails.getUser().getId());
+      User user = userService.changeUserName(requestDto.getNewUserName(), principalDetails.getUser().getId(), principalDetails);
       UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
-      principalDetails.getUser().setUsername(user.getUsername());
       return new ResponseEntity(responseDto, HttpStatus.OK);
     } catch (Exception e) {
       log.info("Exception= ", e);
@@ -153,9 +143,31 @@ public class UsersController {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
     try {
-      User user = userService.changeUserName(requestDto.getNewPhoneNumber(), principalDetails.getUser().getId());
+      User user = userService.changePhoneNumber(requestDto.getNewPhoneNumber(), principalDetails.getUser().getId(), principalDetails);
       UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
-      principalDetails.getUser().setPhoneNumber(user.getPhoneNumber());
+      return new ResponseEntity(responseDto, HttpStatus.OK);
+    } catch (Exception e) {
+      log.info("Exception= ", e);
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+  }
+  @PutMapping("/charge-epay")
+  public ResponseEntity chargeEpay(@RequestBody ChargeEpayRequestDto requestDto, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    ChargeEpayResponseDto responseDto = userService.chargeEpay(principalDetails, requestDto.getEpay());
+    return new ResponseEntity(responseDto, HttpStatus.ACCEPTED);
+  }
+
+  @PostMapping("/edit-password")
+  public ResponseEntity<UserInfoResponseDto> editPassword(
+          @Valid @RequestBody EditPasswordRequestDto requestDto,
+          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    try {
+      User user = userService.changePassword(requestDto.getPassword(), principalDetails.getUser().getId(), principalDetails);
+      UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
+
       return new ResponseEntity(responseDto, HttpStatus.OK);
     } catch (Exception e) {
       log.info("Exception= ", e);
@@ -171,9 +183,9 @@ public class UsersController {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
     try {
-      User user = userService.changeUserName(requestDto.getNewAddress(), principalDetails.getUser().getId());
+      User user = userService.changeAddress(requestDto.getNewAddress(), principalDetails.getUser().getId(), principalDetails);
       UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
-      principalDetails.getUser().setAddress(user.getAddress());
+
       return new ResponseEntity(responseDto, HttpStatus.OK);
     } catch (Exception e) {
       log.info("Exception= ", e);

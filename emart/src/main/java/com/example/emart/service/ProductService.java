@@ -17,9 +17,6 @@ public class ProductService {
     return productRepository.getAllProductsList();
   }
 
-  public Product getProductById(Long id) {
-    return productRepository.findById(id);
-  }
 
   public List<Product> getProductSearchList(String searchWord) {
     return productRepository.getProductSearchList(searchWord);
@@ -40,5 +37,17 @@ public class ProductService {
 
   public List<Product> getProductAll() {
     return productRepository.findAll();
+  }
+
+  public void addLike(Long productId) {
+
+  }
+
+  public Product findOne(Long productId) {
+    return productRepository.findById(productId);
+  }
+
+  public List<Product> findProductInLikeProductByUserId(Long userId) {
+    return productRepository.findProductInLikeProductByUserId(userId);
   }
 }

@@ -17,20 +17,20 @@ public class EmartApplication {
   }
 
   // CORS 문제로 인한 위한 설정 추가
-  @Bean
-  public WebMvcConfigurer corsConfigurer() {
-    return new WebMvcConfigurer() {
-      @Override
-      public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*")
-                .allowedMethods(
-                        HttpMethod.GET.name(),
-                        HttpMethod.HEAD.name(),
-                        HttpMethod.PUT.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.DELETE.name()
-                );
-      }
-    };
-  }
+//  @Bean
+//  public WebMvcConfigurer corsConfigurer() {
+//    return new WebMvcConfigurer() {
+//      @Override
+//      public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**").allowedOrigins("*")
+//                .allowedMethods(
+//                        HttpMethod.GET.name(),
+//                        HttpMethod.HEAD.name(),
+//                        HttpMethod.PUT.name(),
+//                        HttpMethod.POST.name(),
+//                        HttpMethod.DELETE.name()
+//                );
+//      }
+//    };
+//  }
 }

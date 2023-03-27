@@ -23,14 +23,15 @@ public class CartRepository {
   }
 
   public List<CartProductDto> getAllCartProductList(Long userId) {
-    List<Object[]> resultList = em.createQuery("select c.product, c.qty from Cart c where c.user.id=:userId")
+    List<Object[]> resultList = em.createQuery("select c.product, c.id, c.qty from Cart c where c.user.id=:userId")
             .setParameter("userId", userId)
             .getResultList();
     List<CartProductDto> cartProductDtos = new ArrayList<>();
     for (Object[] result : resultList) {
       System.out.println("result[0] = " + result[0]);
       System.out.println("result[1] = " + result[1]);
-      cartProductDtos.add(new CartProductDto((Product) result[0], (int) result[1]));
+      System.out.println("result[2] = " + result[2]);
+      cartProductDtos.add(new CartProductDto((Product) result[0], (Long) result[1], (int) result[2]));
     }
     return cartProductDtos;
   }

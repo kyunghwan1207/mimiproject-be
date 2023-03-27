@@ -25,4 +25,5 @@ public class UserJoinRequestDTO {
   private String address;
 
   private String phoneNumber;
+  private String simplePassword;
 }

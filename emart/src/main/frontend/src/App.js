@@ -15,7 +15,7 @@ import Search from './components/pages/Search';
 import VerifyPassword from './components/pages/VerifyPassword';
 import EditUserInfo from './components/pages/EditUserInfo';
 import LoginRetry from './components/pages/LoginRetry';
-
+import MyLikeProducts from './components/pages/MyLikeProducts';
 function App() {
   return (
 
@@ -36,7 +36,7 @@ function App() {
         <Route path='/verify-password' element={<VerifyPassword />} />
         <Route path='/edit-user-info' element={<EditUserInfo />} />
         <Route path='/login-retry' element={<LoginRetry />} />
-
+        <Route path='/my-like-products' element={<MyLikeProducts />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -1,11 +1,9 @@
 package com.example.emart.controller;
 
-import com.example.emart.config.auth.AuthCheckInterceptor;
 import com.example.emart.config.auth.PrincipalDetails;
 import com.example.emart.dto.CartAddRequestDTO;
 import com.example.emart.dto.CartProductDto;
 import com.example.emart.dto.CartProductResponseDto;
-import com.example.emart.dto.ProductManyResponseDto;
 import com.example.emart.entity.Cart;
 import com.example.emart.entity.Product;
 import com.example.emart.entity.User;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.example.emart.config.auth.AuthCheckInterceptor.*;
 
@@ -42,13 +39,17 @@ public class CartsController {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
     List<CartProductDto> cartProductDtos = cartService.getAllCartProductList(principalDetails.getUser().getId());
+    User user = principalDetails.getUser();
+    String simplePassword = user.getSimplePassword();
+    int epay = user.getEpay();
     List<CartProductResponseDto> responseDtos =
-            cartProductDtos.stream().map(cp -> new CartProductResponseDto(cp.getProduct(), cp.getQty())).collect(Collectors.toList());
+            cartProductDtos.stream().map(cp ->
+                    new CartProductResponseDto(cp.getProduct(), cp.getCartId(), cp.getQty(), cp.getProduct().getQty(), simplePassword, epay)).collect(Collectors.toList());
     return new ResponseEntity(responseDtos, HttpStatus.ACCEPTED);
   }
 
   // 특정 사용자 장바구니에 상품 담기
-  @PostMapping("/add") // 03.24 테스트 필요
+  @PostMapping("/add")
   public ResponseEntity addCartProduct(@RequestBody CartAddRequestDTO cartAddRequestDTO, @AuthenticationPrincipal PrincipalDetails principalDetails) {
     if (!isLogin(principalDetails)) {
       log.info("cart fail to addCartProduct() | 401 UNAUTHORIZED");
@@ -63,31 +64,25 @@ public class CartsController {
        * */
       Optional<Cart> optCart = cartService.findCart(principalDetails.getUser().getId(), product);
       if (optCart.isPresent()) {
-        if (canAddtoExistCart(optCart.get(), product, cartAddRequestDTO.getQty())) {
-          System.out.println("if/if");
+        if (canAddToExistCart(optCart.get(), product, cartAddRequestDTO.getQty())) {
           // product.qty 감소는 주문(Order)에서 실행
           Cart cart = optCart.get();
           int newQty = cart.getQty() + cartAddRequestDTO.getQty();
-          System.out.println(String.format("newQty: {}, before cart.getQty(): {}", newQty, cart.getQty()));
           cartService.updateQty(cart, newQty);
-          System.out.println(String.format("after cart.getQty(): {}", cart.getQty()));
           userService.updateCart(principalDetails.getUser().getId(), cart); // product쪽 cart까지 update처리
           return new ResponseEntity(HttpStatus.NO_CONTENT); // 204
         } else {
           // 수량 부족인 경우
-          System.out.println("if/else / 수량 부족");
           return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE); // 406
         }
       } else { // 장바구니에 처음 추가한 경우
         // product.qty 감소는 주문(Order)에서 실행
         if (canAddFirstCart(product, cartAddRequestDTO.getQty())) {
-          System.out.println("else/if");
           Cart cart = new Cart(product, cartAddRequestDTO.getQty());
           cartService.save(cart);
           userService.addCart(principalDetails.getUser().getId(), cart); // product쪽 cart까지 update처리
           return new ResponseEntity(HttpStatus.CREATED); // 201
         } else {
-          System.out.println("else/else");
           // 수량 부족인 경우
           return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE); // 406
         }
@@ -100,24 +95,22 @@ public class CartsController {
     }
   }
 
-  private boolean canAddFirstCart(Product product, int newQty) {
-    return (product.getQty() >= newQty);
-  }
-
   // 특정 사용자 장바구니에서 수량 업데이트
-  @PutMapping("/update/{id}")
-  public Cart changeCartInfo(@RequestBody CartAddRequestDTO cartDTO, @PathVariable Long id) {
-    return cartService.changeCartQty(cartDTO.getQty(), id);
-  }
+//  @PutMapping("/update/{id}")
+//  public Cart changeCartInfo(@RequestBody CartAddRequestDTO cartDTO, @PathVariable Long id) {
+//    return cartService.changeCartQty(cartDTO.getQty(), id);
+//  }
 
   // 특정 사용자 장바구니에서 상품 삭제
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   public void deleteCartProduct(@PathVariable Long id) {
     cartService.deleteCartProduct(id);
   }
 
-  private boolean canAddtoExistCart(Cart cart, Product product, int newQty) {
+  private boolean canAddToExistCart(Cart cart, Product product, int newQty) {
     return (cart.getQty() + newQty <= product.getQty());
   }
-
+  private boolean canAddFirstCart(Product product, int newQty) {
+    return (product.getQty() >= newQty);
+  }
 }
