@@ -1,6 +1,5 @@
 package com.example.emart.controller;
 
-import com.example.emart.config.auth.AuthCheckInterceptor;
 import com.example.emart.config.auth.PrincipalDetails;
 import com.example.emart.consts.SessionConst;
 import com.example.emart.dto.*;
@@ -13,14 +12,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.awt.event.PaintEvent;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 
 import static com.example.emart.config.auth.AuthCheckInterceptor.isLogin;
 
@@ -37,38 +37,6 @@ public class UsersController {
   public User addUser(@Valid @RequestBody UserJoinRequestDTO userJoinRequestDTO) {
     System.out.println("joinRequestDTO = " + userJoinRequestDTO);
     return userService.addUser(userJoinRequestDTO);
-  }
-
-  @PostMapping("/login")
-  public ResponseEntity<UserLoginResponseDTO> login(
-          @Valid @RequestBody UserLoginDTO loginDTO,
-          @RequestParam(value = "redirectURL", defaultValue = "/") String redirectURL,
-          HttpServletRequest request
-  ) throws IllegalArgumentException {
-    System.out.println("loginDTO = " + loginDTO);
-    String finalRedirectURL;
-    try {
-      User findUser = userService.getUserInfoByEmail(loginDTO.getEmail());
-      if (findUser != null && isSamePw(findUser.getPassword(), loginDTO.getPassword())) {
-        HttpSession session = request.getSession(true); // 없으면 새로 생성
-        session.setAttribute(SessionConst.NAME, findUser.getId());
-//        finalRedirectURL = "redirect:" + redirectURL;
-        finalRedirectURL = redirectURL;
-        UserLoginResponseDTO responseDTO = new UserLoginResponseDTO(finalRedirectURL);
-        return new ResponseEntity<>(responseDTO, HttpStatus.ACCEPTED); // 202
-      } else {
-        throw new IllegalArgumentException("입력 정보를 다시 확인해주세요.");
-      }
-    } catch (IllegalArgumentException e) {
-      log.info("로그인에 실패했습니다");
-//      finalRedirectURL = "redirect:/login";
-      finalRedirectURL = "/login";
-      UserLoginResponseDTO responseDTO = new UserLoginResponseDTO(finalRedirectURL);
-      return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST); // 400
-    }
-  }
-  public boolean isSamePw(String pw1, String pw2) {
-    return pw1.equals(pw2);
   }
 
   // 아이디 번호를 이용한 사용자 정보 조회
@@ -119,18 +87,118 @@ public class UsersController {
     return new ResponseEntity(status);
   }
 
+  @PostMapping("/check-password")
+  public ResponseEntity checkPassword(
+          @RequestBody CheckPasswordRequestDto requestDto,
+          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    boolean isSame = userService.isSamePw(principalDetails.getUser().getPassword(), requestDto.getPassword());
+
+    HttpStatus status = HttpStatus.OK;
+    if (!isSame) {
+      status = HttpStatus.BAD_REQUEST;
+    }
+    return new ResponseEntity(status);
+  }
+
   // 회원정보 변경
   @PutMapping("/{id}")
   public User changeUserInfo(@Valid @RequestBody UserJoinRequestDTO userDTO, @PathVariable Long id) {
     return userService.changeUserInfo(userDTO, id);
   }
+  @PostMapping("/edit-email")
+  public ResponseEntity<UserInfoResponseDto> editEmail(
+          @Valid @RequestBody EditEmailRequestDto requestDto,
+          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    System.out.println("UsersController.editEmail");
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    try {
+      User user = userService.changeEmail(requestDto.getNewEmail(), principalDetails.getUser().getId());
+      UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
+      principalDetails.getUser().setEmail(user.getEmail());
+      return new ResponseEntity(responseDto, HttpStatus.OK);
+    } catch (Exception e) {
+      log.info("Exception= ", e);
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+  }
 
-  @PostMapping("/login-handle")
+  @PostMapping("/edit-username")
+  public ResponseEntity<UserInfoResponseDto> editUserName(
+          @Valid @RequestBody EditUserNameRequestDto requestDto,
+          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    try {
+      User user = userService.changeUserName(requestDto.getNewUserName(), principalDetails.getUser().getId());
+      UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
+      principalDetails.getUser().setUsername(user.getUsername());
+      return new ResponseEntity(responseDto, HttpStatus.OK);
+    } catch (Exception e) {
+      log.info("Exception= ", e);
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PostMapping("/edit-phoneNumber")
+  public ResponseEntity<UserInfoResponseDto> editPhoneNumber(
+          @Valid @RequestBody EditPhoneNumberRequestDto requestDto,
+          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    try {
+      User user = userService.changeUserName(requestDto.getNewPhoneNumber(), principalDetails.getUser().getId());
+      UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
+      principalDetails.getUser().setPhoneNumber(user.getPhoneNumber());
+      return new ResponseEntity(responseDto, HttpStatus.OK);
+    } catch (Exception e) {
+      log.info("Exception= ", e);
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PostMapping("/edit-address")
+  public ResponseEntity<UserInfoResponseDto> editAddress(
+          @Valid @RequestBody EditAddressRequestDto requestDto,
+          @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    try {
+      User user = userService.changeUserName(requestDto.getNewAddress(), principalDetails.getUser().getId());
+      UserInfoResponseDto responseDto = UserInfoResponseDto.convertUserInfoResponseDtoWithoutCount(user);
+      principalDetails.getUser().setAddress(user.getAddress());
+      return new ResponseEntity(responseDto, HttpStatus.OK);
+    } catch (Exception e) {
+      log.info("Exception= ", e);
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * 로그인 실패시 로직처리하는 함수
+   * */
+  @PostMapping("/login-handle") 
   public void loginHandle(HttpServletResponse response) throws IOException {
     System.out.println("loginHandle");
     HttpHeaders headers = new HttpHeaders();
-    String redirect_uri = "http://localhost:3000/login"; // 로그인 재시도
+    String redirect_uri = "http://localhost:3000/login-retry"; // 로그인 재시도
     response.addHeader("login_result", "fail");
     response.sendRedirect(redirect_uri);
+  }
+
+  @GetMapping("/logout")
+  public ResponseEntity logout(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    if (!isLogin(principalDetails)) {
+      return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    principalDetails.setUser(null);
+    return new ResponseEntity(HttpStatus.OK);
   }
 }

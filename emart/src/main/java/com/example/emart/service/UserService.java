@@ -92,4 +92,29 @@ public class UserService {
             });
 
   }
+
+  public boolean isSamePw(String userPassword, String checkPassword) {
+    return encoder.matches(checkPassword, userPassword);
+  }
+
+  @Transactional
+  public User changeEmail(String newEmail, Long id) {
+    User user = userRepository.getUserInfoById(id).orElse(null);
+    if(user != null) {
+      user.setEmail(newEmail);
+    } else {
+      throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+    }
+    return user;
+  }
+
+  public User changeUserName(String username, Long id) {
+    User user = userRepository.getUserInfoById(id).orElse(null);
+    if(user != null) {
+      user.setUsername(username);
+    } else {
+      throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+    }
+    return user;
+  }
 }

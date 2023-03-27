@@ -3,15 +3,19 @@ package com.example.emart.config.auth;
 import com.example.emart.entity.User;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-@RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails {
 
-    private final User user;
+    private User user;
+    @Autowired
+    public PrincipalDetails(User user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,6 +34,19 @@ public class PrincipalDetails implements UserDetails {
 
     public User getUser() {
         return user;
+    }
+    public void setEmail(String email) {
+        user.setEmail(email);
+    }
+    public void setUserName(String username) {
+        user.setUsername(username);
+    }
+    public void setPassword(String password) {
+        user.setPassword(password);
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        user.setPhoneNumber(phoneNumber);
     }
 
     @Override
@@ -54,5 +71,8 @@ public class PrincipalDetails implements UserDetails {
         // logtime = user.getLogindDte
         // now_teim - logtime 이 1년을 초과하면 return false;
         return true;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -18,7 +18,7 @@ function UserInfo() {
     let navigate = useNavigate();
 
     const moveTo = (locate) => {
-        navigate(locate, {});
+        navigate(locate, {test: "testVal"});
     }
 
     const handleLogoutClick = () => {
@@ -30,11 +30,9 @@ function UserInfo() {
         .then(res => alert("로그아웃 되었습니다."))
         .catch(err => alert("로그아웃에 실패했습니다."));
         
-        
     }
     useEffect(() => {
-        const url = `/api/v1/users/my-info`
-        axios.get(url)
+        axios.get(`/api/v1/users/my-info`)
         .then(res => {
             console.log('res = ', res);
             if (res.status >= 200 && res.status < 300) {
@@ -79,7 +77,7 @@ function UserInfo() {
                             
                         }
                     <button className='style.btn' onClick={handleLogoutClick}>로그아웃</button>
-                    <button className='style.btn' onClick={() => moveTo("/change-password")}>비밀번호 변경</button>
+                    <button className='style.btn' onClick={() => moveTo("/verify-password")}>회원정보 변경</button>
                 </div>
                 
             }

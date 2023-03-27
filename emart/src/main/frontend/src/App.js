@@ -12,6 +12,10 @@ import CartList from './components/pages/CartList';
 import Footer from './components/layout/Footer';
 import QR from './components/pages/QR';
 import Search from './components/pages/Search';
+import VerifyPassword from './components/pages/VerifyPassword';
+import EditUserInfo from './components/pages/EditUserInfo';
+import LoginRetry from './components/pages/LoginRetry';
+
 function App() {
   return (
 
@@ -29,6 +33,10 @@ function App() {
         <Route path='/' element={<ProductList/>} />
         <Route path='/qr' element={<QR/>} />
         <Route path='/search' element={<Search/>} />
+        <Route path='/verify-password' element={<VerifyPassword />} />
+        <Route path='/edit-user-info' element={<EditUserInfo />} />
+        <Route path='/login-retry' element={<LoginRetry />} />
+
       </Routes>
       <Footer />
     </BrowserRouter>

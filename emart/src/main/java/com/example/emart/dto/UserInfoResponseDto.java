@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserInfoResponseDto {
     private String email;
     private String username;
@@ -20,5 +19,20 @@ public class UserInfoResponseDto {
         this.address = user.getAddress();
         this.phoneNumber = user.getPhoneNumber();
         this.count = count;
+    }
+    public UserInfoResponseDto(String email, String username, String address, String phoneNumber) {
+        this.email = email;
+        this.username = username;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public static UserInfoResponseDto convertUserInfoResponseDtoWithoutCount(User user) {
+        return new UserInfoResponseDto(
+                user.getEmail(),
+                user.getUsername(),
+                user.getAddress(),
+                user.getPhoneNumber()
+        );
     }
 }

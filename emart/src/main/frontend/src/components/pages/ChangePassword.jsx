@@ -60,21 +60,18 @@ function ChangePassword() {
         setConfirmNewPassword(e.target.value)
     }
 
-    const handleUserVerifyBtnClick = () => {
-        if(user.email === email && user.password === currentPassword) {
-            setMessage('인증에 성공했습니다.')
-        } else {
-            setMessage('인증에 실패했습니다.');
-        }
+    const handleUserVerifyBtnClick = async () => {
+        // password를 보내서 일치하는지 확인하는 API 필요
+
     }
     
     
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/users/${userId}`)
+        axios.get(`/api/v1/users/my-info`)
         .then((res) => res.data)
         .then((res) => setUser(res))
-        .catch((err) => console.log('changePassword / user'));
+        .catch((err) => console.log('[Error|GET]changePassword / user'));
     }, [])
     return (
         <>

@@ -25,6 +25,9 @@ public class User extends BaseTime{
   private String address;
 
   private String phoneNumber;
+  private String simplePassword; // e pay 간편결제 비밀번호
+  private int epay; // e pay 충전 금액
+  private String account; // e pay 충전시 사용할 계좌
 
   @Enumerated(EnumType.STRING)
   private ROLE role;

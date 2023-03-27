@@ -94,7 +94,10 @@ function ProductList({props}) {
             setCartCnt(res.data.count);
             console.log("Time while 3-times-api-call: ", new Date() - startTime); // 321
         })
-        .catch((err) => console.log("[Error|GET] my-info: ", err));
+        .catch((err) => {
+            console.log("[Error|GET] my-info: ", err)
+            setCartCnt(0);
+        });
 
         
 
