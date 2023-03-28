@@ -61,4 +61,23 @@ public class CartRepository {
     }
     return Integer.valueOf(0);
   }
+
+    public Optional<Cart> findById(Long cartId) {
+      return em.createQuery("select c from Cart c where c.id=:cartId", Cart.class)
+              .setParameter("cartId", cartId)
+              .getResultStream().findFirst();
+
+    }
+
+  public List<Cart> findAllByUserId(Long userId) {
+    return em.createQuery("select c from Cart c join fetch c.product where c.user.id=:userId", Cart.class)
+            .setParameter("userId", userId)
+            .getResultList();
+  }
+
+  public void delete(Cart cart) {
+    em.createQuery("delete from Cart c where c.id=:cartId")
+            .setParameter("cartId", cart.getId())
+            .executeUpdate();
+  }
 }

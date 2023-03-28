@@ -60,7 +60,7 @@ function EditUserInfo() {
             let res = await axios(
                 '/api/v1/users/edit-email',
                 {
-                    method: 'post',
+                    method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     data: {
                      "newEmail": newEmail
@@ -84,7 +84,7 @@ function EditUserInfo() {
             let res = await axios(
                 '/api/v1/users/edit-username',
                 {
-                    method: 'post',
+                    method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     data: {
                      "newUserName": newName
@@ -107,7 +107,7 @@ function EditUserInfo() {
             let res = await axios(
                 '/api/v1/users/edit-phoneNumber',
                 {
-                    method: 'post',
+                    method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     data: {
                      "newPhoneNumber": newPhoneNumber
@@ -131,7 +131,7 @@ function EditUserInfo() {
             let res = await axios(
                 '/api/v1/users/edit-address',
                 {
-                    method: 'post',
+                    method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     data: {
                      "newAddress": newAddress
@@ -151,7 +151,7 @@ function EditUserInfo() {
             let res = await axios(
                 '/api/v1/users/check-password',
                 {
-                    method: 'post',
+                    method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     data: {
                      "password": inputPassword
@@ -184,7 +184,7 @@ function EditUserInfo() {
             let res = await axios(
                 '/api/v1/users/edit-password',
                 {
-                    method: 'post',
+                    method: 'put',
                     headers: {'Content-Type': 'application/json'},
                     data: {
                      "newPassword": newPassword

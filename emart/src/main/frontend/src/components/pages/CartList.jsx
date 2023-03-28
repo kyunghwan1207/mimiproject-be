@@ -15,12 +15,13 @@ function CartList() {
     const [message, setMessage] = useState('');
     const [delCheck, setDelCheck] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [totalPriceList, setTotalPriceList] = useState();
     const [isOpen, setIsOpen] = useState(false); 
     const [userSimplePassword, setUserSimplePassword] = useState('');
     const [epay, setEpay] = useState(0);
     const [simplePassword, setSimplePassword] = useState('');
     const [payCheck, setPayCheck] = useState(false);
+    const [productList, setProductList] = useState();
+    const [cartId, setCartId] = useState();
 
     const userId = useRecoilValue(UserIdState);
     const loginState = useRecoilValue(LoginState);
@@ -51,6 +52,19 @@ function CartList() {
         }
         setTotalPrice(tPrice);
     }
+    const getProductList = (arr) => {
+        let product_list = new Array(arr.length);
+        for (let i = 0; i < arr.length; i++) {
+            let p = {}
+            p.productId = arr[i].id; // productId
+            p.price = arr[i].price;
+            p.productQty = arr[i].productQty;
+            p.orderQty = arr[i].qty; // 장바구니에 담긴 갯수
+            product_list[i] = p;
+        }
+        console.log("product_list: ", product_list);
+        setProductList(product_list);
+    }
 
     useEffect(() => {
         axios.get(`/api/v1/carts`)
@@ -61,17 +75,20 @@ function CartList() {
                 setMyCartList(undefined);
                 return;
             }
+            console.log("res.data[0]: ", res.data[0]);
+            console.log("cartId 구하자! & cart에 각 제품이 몇개씩 들었는지-orderQty 구하자!");
             setUserSimplePassword(res.data[0].simplePassword);
             setEpay(res.data[0].epay);
             setMyCartList(res.data);
+            setCartId(res.data[0].cartId);
+
             return res;
         })
         .then((res) => {
             console.log("res.data.length: ", res.data.length);
-            let priceList = new Array(res.data.length);
-            console.log('priceList: ', priceList);
-            console.log("totalPriceList: ", totalPriceList);
             getTotalPrice(res.data); // [{price: int, qty: int}, {} ...]
+            getProductList(res.data);
+            console.log("myCartList obj: ", myCartList);
         })
     }, [delCheck, payCheck])
     return (
@@ -87,6 +104,7 @@ function CartList() {
                             setDelCheck={setDelCheck}
                             setTotalPrice={setTotalPrice}
                             totalPrice={totalPrice}
+                            
                         />
                     ))
                 }    
@@ -111,6 +129,8 @@ function CartList() {
                                 setPayCheck={setPayCheck}
                                 epay={epay}
                                 totalPrice={totalPrice}
+                                productList={productList}
+                                cartId={cartId}
                             />
                         </Modal> 
                     </div>

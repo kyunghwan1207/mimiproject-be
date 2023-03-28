@@ -50,4 +50,8 @@ public class ProductService {
   public List<Product> findProductInLikeProductByUserId(Long userId) {
     return productRepository.findProductInLikeProductByUserId(userId);
   }
+
+    public Product getProductInfoById(Long productId) {
+      return productRepository.findById(productId);
+    }
 }

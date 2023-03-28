@@ -1,9 +1,13 @@
 package com.example.emart.service;
 
+import com.example.emart.dto.AddOrderRequestDto;
 import com.example.emart.dto.CartAddRequestDTO;
 import com.example.emart.dto.CartProductDto;
+import com.example.emart.dto.OrderProductRequestDto;
 import com.example.emart.entity.Cart;
+import com.example.emart.entity.OrderProduct;
 import com.example.emart.entity.Product;
+import com.example.emart.entity.User;
 import com.example.emart.repository.CartRepository;
 import com.example.emart.repository.ProductRepository;
 import com.example.emart.repository.UserRepository;
@@ -20,6 +24,7 @@ public class CartService {
   private final CartRepository cartRepository;
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
+  private final OrderProductService orderProductService;
 
 
   public List<CartProductDto> getAllCartProductList(Long userId) {
@@ -58,5 +63,21 @@ public class CartService {
   }
   public int findCartCountWithUserId(Long userId) {
     return cartRepository.findCarCountWithUserId(userId);
+  }
+
+  public Cart findById(Long cartId) {
+      Optional<Cart> findCart = cartRepository.findById(cartId);
+      return findCart.get();
+  }
+  @Transactional
+  public void deleteProductByUserId(Long userId, AddOrderRequestDto requestDto) {
+    User user = userRepository.getUserInfoById(userId).get();
+    List<OrderProductRequestDto> orderProductList = requestDto.getOrderProductRequestDtos();
+    List<Cart> carts = cartRepository.findAllByUserId(userId);
+    for (Cart cart : carts) {
+      user.getCarts().remove(cart);
+      cart.getProduct().getCarts().remove(cart);
+      cartRepository.delete(cart);
+    }
   }
 }

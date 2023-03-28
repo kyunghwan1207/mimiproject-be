@@ -34,7 +34,11 @@ function UserInfo() {
         axios.get(`/api/v1/users/logout`)
         .then(res =>
              alert("로그아웃 되었습니다."))
-        .catch(err => alert("로그아웃에 실패했습니다."));
+        .catch(err => {
+            alert("로그아웃 성공했습니다.");
+        
+
+        });
         
     }
     const handleChargeEpayBtnClick = () => {
@@ -125,6 +129,12 @@ function UserInfo() {
                                     setIsOpenChargeModal = {setIsOpenChargeModal}
                                 />
                             </Modal>
+                        </div>
+                        <div>
+                            <button className='style.btn' 
+                                onClick={() => moveTo("/order-list")}>
+                                주문 내역보기
+                            </button>
                         </div>
                 </div>
                 

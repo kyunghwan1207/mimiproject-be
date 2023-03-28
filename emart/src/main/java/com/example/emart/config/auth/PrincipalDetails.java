@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
 
@@ -24,15 +25,24 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public String getPassword() {
+        if (user == null) {
+            throw new UsernameNotFoundException("");
+        }
         return user.getPassword();
     }
 
     @Override
     public String getUsername() {
+        if (user == null) {
+            throw new UsernameNotFoundException("");
+        }
         return user.getUsername();
     }
 
     public User getUser() {
+        if (user == null) {
+            throw new UsernameNotFoundException("");
+        }
         return user;
     }
     public void setEmail(String email) {

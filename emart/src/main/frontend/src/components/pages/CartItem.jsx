@@ -47,7 +47,10 @@ function CartItem({props, delCheck, setDelCheck, setTotalPrice, totalPrice}) {
     useEffect(() => {
         axios.get(`/api/v1/products/${productId}`)
         .then((res) => res.data)
-        .then((res) => setProduct(res));
+        .then((res) => {
+            console.log("[CartItem] res: ", res);
+            setProduct(res);
+        });
     }, [])
     return (
         <>

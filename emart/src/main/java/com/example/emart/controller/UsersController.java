@@ -50,9 +50,10 @@ public class UsersController {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     } else {
       status = HttpStatus.ACCEPTED;
-      int cartCount = cartService.findCartCountWithUserId(principalDetails.getUser().getId());
+      User user = userService.getUserInfoById(principalDetails.getUser().getId());
+      int cartCount = cartService.findCartCountWithUserId(user.getId());
       System.out.println("cartCount = " + cartCount);
-      UserInfoResponseDto responseDto = new UserInfoResponseDto(principalDetails.getUser(), cartCount);
+      UserInfoResponseDto responseDto = new UserInfoResponseDto(user, cartCount);
       return new ResponseEntity<>(responseDto, status);
     }
   }
@@ -89,7 +90,8 @@ public class UsersController {
     if (!isLogin(principalDetails)) {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
-    boolean isSame = userService.isSamePw(principalDetails.getUser().getPassword(), requestDto.getPassword());
+    User user = userService.getUserInfoById(principalDetails.getUser().getId());
+    boolean isSame = userService.isSamePw(user.getPassword(), requestDto.getPassword());
 
     HttpStatus status = HttpStatus.OK;
     if (!isSame) {
@@ -99,11 +101,10 @@ public class UsersController {
   }
 
   // 회원정보 변경
-  @PostMapping("/edit-email")
+  @PutMapping("/edit-email")
   public ResponseEntity<UserInfoResponseDto> editEmail(
           @Valid @RequestBody EditEmailRequestDto requestDto,
           @AuthenticationPrincipal PrincipalDetails principalDetails) {
-    System.out.println("UsersController.editEmail");
     if (!isLogin(principalDetails)) {
       return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
@@ -118,7 +119,7 @@ public class UsersController {
     }
   }
 
-  @PostMapping("/edit-username")
+  @PutMapping("/edit-username")
   public ResponseEntity<UserInfoResponseDto> editUserName(
           @Valid @RequestBody EditUserNameRequestDto requestDto,
           @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -135,7 +136,7 @@ public class UsersController {
     }
   }
 
-  @PostMapping("/edit-phoneNumber")
+  @PutMapping("/edit-phoneNumber")
   public ResponseEntity<UserInfoResponseDto> editPhoneNumber(
           @Valid @RequestBody EditPhoneNumberRequestDto requestDto,
           @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -157,7 +158,7 @@ public class UsersController {
     return new ResponseEntity(responseDto, HttpStatus.ACCEPTED);
   }
 
-  @PostMapping("/edit-password")
+  @PutMapping("/edit-password")
   public ResponseEntity<UserInfoResponseDto> editPassword(
           @Valid @RequestBody EditPasswordRequestDto requestDto,
           @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -175,7 +176,7 @@ public class UsersController {
     }
   }
 
-  @PostMapping("/edit-address")
+  @PutMapping("/edit-address")
   public ResponseEntity<UserInfoResponseDto> editAddress(
           @Valid @RequestBody EditAddressRequestDto requestDto,
           @AuthenticationPrincipal PrincipalDetails principalDetails) {

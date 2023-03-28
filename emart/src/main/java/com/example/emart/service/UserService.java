@@ -44,7 +44,7 @@ public class UserService {
             userDTO.getAddress(),
             userDTO.getPhoneNumber(),
             role,
-            encoder.encode(userDTO.getSimplePassword())
+            userDTO.getSimplePassword()
     );
     userRepository.save(user);
     return user;

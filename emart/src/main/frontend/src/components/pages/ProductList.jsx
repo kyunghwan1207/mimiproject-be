@@ -99,7 +99,6 @@ function ProductList({props}) {
                     </a>
                 </div>))}
             </Slider>
-            <h2>행사상품</h2>
             <nav>
                 <ul>
                     {

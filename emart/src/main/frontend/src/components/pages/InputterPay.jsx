@@ -3,6 +3,7 @@ import ChargeEpay from './ChargeEpay';
 import "./Inputter.css"
 import Modal from 'react-modal';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const shuffle = (nums) => {
     // 배열 섞는 함수
@@ -25,6 +26,7 @@ function InputterPay(props) {
   // const [password, setPassword] = useState(props.password);
   const [isOpenChargeModal ,setIsOpenChargeModal] = useState(false);
 
+  let navigate = useNavigate();
   const handlePasswordChange = useCallback(
     (num) => {
       if (props.password.length === PASSWORD_MAX_LENGTH) {
@@ -56,9 +58,6 @@ function InputterPay(props) {
     [props.password],
   )
 
-  // const erasePasswordOne = () => {
-  //   props.setPassword(props.password.slice(0, props.password.length === 0 ? 0 : props.password.length - 1))
-  // }
 
   const erasePasswordAll = useCallback((e) => {
     props.setPassword("")
@@ -86,6 +85,7 @@ function InputterPay(props) {
     // 비밀번호 제출
     console.log("props.totalPrice: ", props.totalPrice);
         console.log("props.epay: ", props.epay);
+        console.log("props.productList: ", props.productList);
     if (props.password.length < PASSWORD_MAX_LENGTH) {
       alert("비밀번호를 입력 후 눌러주세요!")
     } else if (props.userPassword === props.password) {
@@ -105,17 +105,35 @@ function InputterPay(props) {
     setIsOpenChargeModal(true);
   }
 const processPayment = async () => {
-  // try {
-  //   let res = await axios(
-  //     '/api/v1/orders',
-  //     {
-  //       method: 'post',
-  //       headers: {'Content-Type': 'application/json'},
-        
-  //     }
-  //   )
-  // }
-  console.log("processPayment");
+  console.log("start processPayment");
+
+    let data = {
+      "cartId": props.cartId,
+      "totalPrice": props.totalPrice,
+      "orderProductRequestDtos": props.productList
+    }
+    try {
+      let res = await axios('/api/v1/orders', 
+      {
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          data: data
+      })
+      console.log("join res: ", res);
+      if(res.status >= 200 && res.status < 300){
+          if (window.confirm("주문이 정상적으로 처리되었습니다. 주문 내역을 확인하시겠습니까?")) {
+            navigate("/order-list", {});
+            return;
+          }
+      } else {
+        alert("주문에 실패했습니다. 다시 시도해주시기 바랍니다.");
+        return;
+      }
+  } catch (err) {
+      console.log("order err: ", err);
+  }
+  console.log("end processPayment");
+  props.setPayCheck(!props.spayCheck); // useEffect 호출을 위한 상태변경
 }
 const toggle = () => {
     props.setIsOpen(true);

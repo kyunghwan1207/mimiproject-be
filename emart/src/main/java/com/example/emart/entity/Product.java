@@ -64,4 +64,16 @@ public class Product extends BaseTime{
     this.likeProducts.add(likeProduct);
     likeProduct.setProduct(this);
   }
+
+  public void removeStock(int orderQty) {
+    int restQty = this.qty - orderQty;
+    if (restQty < 0) {
+      throw new IllegalArgumentException("재고 수량이 부족합니다.");
+    }
+    this.qty = restQty;
+  }
+
+  public void addQty(int stockQty) {
+    this.qty += stockQty;
+  }
 }
