@@ -88,9 +88,15 @@ public class OrderController {
             @PathVariable Long orderId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        Order findOrder = orderService.findById(orderId);
-        findOrder.cancel();
-        orderService.delete(findOrder);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        List<OrderProduct> orderProducts = orderProductService.findAllWithProduct(orderId);
+        try {
+            for (OrderProduct orderProduct : orderProducts) {
+                productService.cancelOrder(principalDetails.getUser().getId(), orderId ,orderProduct);
+            }
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
     }
 }

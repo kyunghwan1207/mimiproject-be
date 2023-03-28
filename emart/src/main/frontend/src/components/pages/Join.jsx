@@ -17,6 +17,7 @@ function Join() {
     const [roadAddress, setRoadAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isOpen, setIsOpen] = useState(false); 
+    const [isOpenAddress, setIsOpenAddress] = useState(false);
     const [simplePassword, setSimplePassword] = useState('');
 
     const emailRef = useRef('');
@@ -28,7 +29,8 @@ function Join() {
     
     const completeHandler = (data) =>{
         setRoadAddress(data.roadAddress);
-        setIsOpen(false); 
+        setIsOpen(false);
+        setIsOpenAddress(false); 
     }
 
     const modalStyles = {
@@ -181,6 +183,12 @@ function Join() {
     const handleMoveLoginClick = () => {
         navigate("/login", {});
     }
+    const toggleAddress = () => {
+        setIsOpenAddress(true);
+    }
+    const toggleAddressBtn = () => {
+        setIsOpenAddress(false);
+    }
     useEffect(() => {
         console.log("hi");
         const url_getUserList = 'http://localhost:3001/users';
@@ -193,9 +201,9 @@ function Join() {
             <h3>회원가입</h3>
             <div className={style.modalContainer}>
                 <label className={style.labelAddress}>주소:</label>
-                <input className={style.address} value={roadAddress} readOnly placeholder='주소를 입력해주세요' onClick={toggle}/>
-                <Modal isOpen={isOpen} ariaHideApp={false} style={modalStyles}>
-                    <button onClick={toggle}>x</button>
+                <input className={style.address} value={roadAddress} readOnly placeholder='주소를 입력해주세요' onClick={toggleAddress}/>
+                <Modal isOpen={isOpenAddress} ariaHideApp={false} style={modalStyles}>
+                    <button onClick={toggleAddressBtn}>x</button>
                     <DaumPostcode onComplete={completeHandler} height="100%" />
                 </Modal>   
             </div>

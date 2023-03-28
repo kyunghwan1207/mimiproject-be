@@ -17,4 +17,9 @@ public class OrderProductService {
     public List<OrderProduct> findAllWithProduct(Long orderId) {
         return orderProductRepository.findAllWithProduct(orderId);
     }
+
+    @Transactional
+    public void delete(OrderProduct orderProduct) {
+        orderProductRepository.delete(orderProduct);
+    }
 }

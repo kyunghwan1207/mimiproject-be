@@ -35,9 +35,8 @@ function UserInfo() {
         .then(res =>
              alert("로그아웃 되었습니다."))
         .catch(err => {
-            alert("로그아웃 성공했습니다.");
-        
-
+            alert("로그아웃 되었습니다.");
+            navigate('/', {});
         });
         
     }

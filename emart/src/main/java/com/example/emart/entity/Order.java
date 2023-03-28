@@ -51,7 +51,7 @@ public class Order extends BaseTime {
     }
     public void cancel() {
         this.setOrderStatus(ORDER_STATUS.CANCEL);
-        for (OrderProduct orderProduct : orderProducts) {
+        for (OrderProduct orderProduct : this.orderProducts) {
             orderProduct.cancel();
         }
     }

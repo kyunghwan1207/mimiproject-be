@@ -191,13 +191,16 @@ function EditUserInfo() {
                     }
                 });
             console.log("edit pw post/res: ", res);
+            setInputPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
         } catch (err) {
             console.log("edit pw post/err: ", err);
         }
     }
     const completeHandler = (data) =>{
         console.log("completeHandler / data: ", data);
-        setNewAddress(data.newAddress);
+        setNewAddress(data.address);
         setIsOpen(false); 
     }
     useEffect(() => {
@@ -293,15 +296,15 @@ function EditUserInfo() {
             <h5>비밀번호 변경</h5>
             <div>
                 <label>현재 비밀번호</label>
-                <input value={inputPassword} onChange={handleChangeInputPassword}/>
+                <input value={inputPassword} type="password" onChange={handleChangeInputPassword}/>
             </div>
             <div>
                 <label>새 비밀번호</label>
-                <input value={newPassword} onChange={handleChangeNewPassword}/>
+                <input value={newPassword} type="password" onChange={handleChangeNewPassword}/>
             </div>
             <div>
                 <label>비밀번호 다시 입력</label>
-                <input value={confirmPassword} onChange={handleChangeConfirmPassword}/>
+                <input value={confirmPassword} type="password" onChange={handleChangeConfirmPassword}/>
                 <button onClick={handlePasswordEditBtnClick}>비밀번호 수정</button>
             </div>
             
